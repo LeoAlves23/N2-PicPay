@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.picpay.picpay"},{"l":"com.picpay.picpay.authorization"},{"l":"com.picpay.picpay.notification"},{"l":"com.picpay.picpay.transaction"},{"l":"com.picpay.picpay.wallet"}];updateSearchResults();

@@ -11,6 +11,9 @@ import com.picpay.picpay.wallet.Wallet;
 import com.picpay.picpay.wallet.WalletRepository;
 import com.picpay.picpay.wallet.WalletType;
 
+/**
+ * Um serviço para operações relacionadas a transações.
+ */
 @Service
 public class TransactionService {
 
@@ -19,13 +22,25 @@ public class TransactionService {
     private final AuthorizerService authorizerService;
     private final NotificationService notificationService;
 
-    public TransactionService(TransactionRepository transactionRepository, AuthorizerService authorizerService ,WalletRepository walletRepository, NotificationService notificationService) {
+    /**
+     * Construtor do TransactionService.
+     * @param transactionRepository O repositório de transações.
+     * @param authorizerService O serviço de autorização de transações.
+     * @param walletRepository O repositório de carteiras.
+     * @param notificationService O serviço de notificações.
+     */
+    public TransactionService(TransactionRepository transactionRepository, AuthorizerService authorizerService, WalletRepository walletRepository, NotificationService notificationService) {
         this.transactionRepository = transactionRepository;
         this.walletRepository = walletRepository;
         this.authorizerService = authorizerService;
         this.notificationService = notificationService;
     }
 
+    /**
+     * Cria uma nova transação.
+     * @param transaction A transação a ser criada.
+     * @return A transação criada.
+     */
     @Transactional
     public Transaction create(Transaction transaction) {
         // 1 - validar
@@ -39,19 +54,19 @@ public class TransactionService {
         walletRepository.save(wallet.debit(transaction.value()));
 
         // 4- chamar serviços externos
-        //Autorização de transações
+        // Autorização de transações
         authorizerService.authorize(transaction);
 
-        //Notificação
+        // Notificação
         notificationService.notify(transaction);
 
         return newTransaction;
     }
 
     /*
-     * -Se pagador tem uma carteira do tipo comum
-     * -Se o pagador tem saldo suficiente
-     * -Pagador não pode ser o recebedor
+     * - Se pagador tem uma carteira do tipo comum
+     * - Se o pagador tem saldo suficiente
+     * - Pagador não pode ser o recebedor
      */
     private void validate(Transaction transaction) {
 
@@ -59,9 +74,9 @@ public class TransactionService {
             .map(payee -> walletRepository.findById(transaction.payer())
                 .map(
                     payer -> isTransactionValid(transaction, payer) ? true : null)
-                    .orElseThrow(() -> new InvalidTransactionException("Invalid transaction - %s" .formatted(transaction))))
-                    .orElseThrow(() -> new InvalidTransactionException("Invalid transaction - %s" .formatted(transaction)));
-      }
+                    .orElseThrow(() -> new InvalidTransactionException("Transação inválida - %s".formatted(transaction))))
+                    .orElseThrow(() -> new InvalidTransactionException("Transação inválida - %s".formatted(transaction)));
+    }
 
     private boolean isTransactionValid(Transaction transaction, Wallet payer) {
         return payer.type() == WalletType.COMUM.getValue() &&
@@ -69,6 +84,10 @@ public class TransactionService {
             !payer.id().equals(transaction.payee());
     }
 
+    /**
+     * Retorna uma lista de todas as transações.
+     * @return Uma lista de transações.
+     */
     public List<Transaction> list() {
         return transactionRepository.findAll();
     }

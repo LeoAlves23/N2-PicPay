@@ -1,7 +1,15 @@
 package com.picpay.picpay.transaction;
 
-public class InvalidTransactionException extends RuntimeException{
-    public InvalidTransactionException(String message){
+/**
+ * Exceção lançada quando ocorre uma transação inválida.
+ */
+public class InvalidTransactionException extends RuntimeException {
+    
+    /**
+     * Construtor da InvalidTransactionException.
+     * @param message A mensagem de erro.
+     */
+    public InvalidTransactionException(String message) {
         super(message);
     }
 

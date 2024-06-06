@@ -1,8 +1,15 @@
 package com.picpay.picpay.notification;
 
-public class notificationException extends RuntimeException{
+/**
+ * Exceção lançada quando ocorre um erro relacionado à notificação.
+ */
+public class NotificationException extends RuntimeException {
 
-    public notificationException(String message){
+    /**
+     * Construtor da NotificationException.
+     * @param message A mensagem de erro.
+     */
+    public NotificationException(String message) {
         super(message);
     }
 
